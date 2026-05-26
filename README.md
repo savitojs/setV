@@ -35,12 +35,10 @@ Python's built-in `venv` works fine for creating environments. What it doesn't d
 - **Run without activating.** `setv --run myenv -- pytest tests/` executes in the environment's context without touching your shell state.
 - **Works in both Bash and Zsh.** Native tab completion for both. No `bashcompinit` hacks.
 
-## Quick start
+## Install
 
 ```sh
-git clone https://github.com/savitojs/setV.git
-cd setV
-./install.sh
+curl -sSL https://github.com/savitojs/setV/releases/latest/download/install.sh | bash
 source ~/.bashrc   # or source ~/.zshrc
 ```
 
@@ -55,17 +53,22 @@ setv --help             # full usage
 
 - Bash 4+ or Zsh 5+
 - Python 3
+- curl (for installation)
 - (Optional) [uv](https://github.com/astral-sh/uv) for faster environment creation
 
-### Manual install
-
-Add to your `.bashrc` or `.zshrc`:
+### From source
 
 ```sh
-source /path/to/setv.sh
+git clone https://github.com/savitojs/setV.git && cd setV && ./install.sh
 ```
 
-Uninstall with `./install.sh --uninstall`.
+### Uninstall
+
+```sh
+curl -sSL https://github.com/savitojs/setV/releases/latest/download/install.sh | bash -s -- --uninstall
+```
+
+Or from a local clone: `./install.sh --uninstall`
 
 ## Command reference
 

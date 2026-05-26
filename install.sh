@@ -4,12 +4,16 @@
 # License: GNU GPL v3, See LICENSE file.
 #
 # Usage:
+#   curl -sSL https://github.com/savitojs/setV/releases/latest/download/install.sh | bash
 #   ./install.sh              Install from local copy
 #   ./install.sh --uninstall  Remove setv from shell configs
 #
 # This script is idempotent - safe to run multiple times.
 
 set -euo pipefail
+
+SETV_REPO="savitojs/setV"
+SETV_DOWNLOAD_URL="https://github.com/${SETV_REPO}/releases/latest/download/setv.sh"
 
 # --- Colors ---
 if [[ -t 1 ]]; then
@@ -30,7 +34,11 @@ warn() { echo -e "${RED}warning:${RESET} $*" >&2; }
 SETV_SOURCE="${HOME}/.setv.sh"
 SETV_ENV_DIR="${HOME}/.virtualenvs"
 SETV_MARKER="# setv - Python virtual environment manager"
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [[ ${#BASH_SOURCE[@]} -gt 0 && -n "${BASH_SOURCE[0]}" ]]; then
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+else
+    SCRIPT_DIR=""
+fi
 
 # --- Uninstall ---
 
@@ -64,18 +72,38 @@ do_uninstall() {
 # --- Install ---
 
 do_install() {
-    local source_file="$SCRIPT_DIR/setv.sh"
-
-    # Verify source exists
-    if [[ ! -f "$source_file" ]]; then
-        err "setv.sh not found in $SCRIPT_DIR"
-        err "Run this script from the setV project directory."
-        exit 1
-    fi
+    local source_file="${SCRIPT_DIR:+$SCRIPT_DIR/}setv.sh"
+    local downloaded=false
 
     echo ""
     echo "  ${BOLD}setV Installer${RESET}"
     echo ""
+
+    # If no local setv.sh, download from GitHub releases
+    if [[ -z "$SCRIPT_DIR" || ! -f "$source_file" ]]; then
+        if ! command -v curl &>/dev/null; then
+            err "curl is required to download setv"
+            exit 1
+        fi
+
+        msg "Downloading setv.sh from GitHub releases..."
+        local tmp_file
+        tmp_file=$(mktemp)
+        if ! curl -o "$tmp_file" -sSfL --connect-timeout 10 --max-time 30 "$SETV_DOWNLOAD_URL"; then
+            rm -f "$tmp_file"
+            err "Download failed. Check your connection."
+            exit 1
+        fi
+
+        if [[ ! -s "$tmp_file" ]] || ! head -1 "$tmp_file" | grep -q '^#!/usr/bin/env bash'; then
+            rm -f "$tmp_file"
+            err "Downloaded file is invalid. Try again or install from source."
+            exit 1
+        fi
+
+        source_file="$tmp_file"
+        downloaded=true
+    fi
 
     # Create virtualenvs directory
     if [[ ! -d "$SETV_ENV_DIR" ]]; then
@@ -93,8 +121,12 @@ do_install() {
         echo ""
     fi
 
-    # Copy setv.sh to home
-    cp "$source_file" "$SETV_SOURCE"
+    # Copy/move setv.sh to home
+    if [[ "$downloaded" == true ]]; then
+        mv "$source_file" "$SETV_SOURCE"
+    else
+        cp "$source_file" "$SETV_SOURCE"
+    fi
     chmod 644 "$SETV_SOURCE"
     msg "Installed ${BLUE}$SETV_SOURCE${RESET}"
 
@@ -177,8 +209,11 @@ case "${1:-}" in
         do_uninstall
         ;;
     --help|-h)
-        echo "Usage: $0 [--uninstall]"
-        echo "  Install or uninstall setv 3.0"
+        echo "Usage: curl -sSL .../install.sh | bash"
+        echo "       ./install.sh [--uninstall]"
+        echo ""
+        echo "  Install or uninstall setv."
+        echo "  Downloads from GitHub releases if no local setv.sh is found."
         ;;
     *)
         do_install
