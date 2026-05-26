@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# setV 3.0 - Installation script
+# setV - Installation script
 #
 # License: GNU GPL v3, See LICENSE file.
 #
@@ -74,7 +74,7 @@ do_install() {
     fi
 
     echo ""
-    echo "  ${BOLD}setV 3.0 Installer${RESET}"
+    echo "  ${BOLD}setV Installer${RESET}"
     echo ""
 
     # Create virtualenvs directory

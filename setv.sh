@@ -210,7 +210,11 @@ _setv_create() {
                 python_spec="$2"; shift 2
                 ;;
             -*)
-                _setv_err "Unknown create option: $1"
+                if [[ -z "$name" ]]; then
+                    _setv_err "Invalid environment name: '$1' (names cannot start with a dash)"
+                else
+                    _setv_err "Unknown option: $1"
+                fi
                 return 1
                 ;;
             *)
@@ -295,6 +299,11 @@ _setv_delete() {
         return 1
     fi
 
+    if [[ "$name" == -* ]]; then
+        _setv_err "Invalid environment name: '$name' (names cannot start with a dash)"
+        return 1
+    fi
+
     if ! _setv_env_exists "$name"; then
         _setv_err "Environment '$name' does not exist"
         return 1
@@ -325,6 +334,11 @@ _setv_activate() {
     local name="$1"
     if [[ -z "$name" ]]; then
         _setv_err "Missing environment name"
+        return 1
+    fi
+
+    if [[ "$name" == -* ]]; then
+        _setv_err "Invalid environment name: '$name' (names cannot start with a dash)"
         return 1
     fi
 
@@ -442,7 +456,9 @@ _setv_info() {
 
     # Package count
     local pkg_count=0
-    if [[ -x "$env_path/bin/pip" ]]; then
+    if _setv_has_uv; then
+        pkg_count=$(uv pip list --python "$env_path/bin/python" 2>/dev/null | tail -n +3 | wc -l)
+    elif [[ -x "$env_path/bin/pip" ]]; then
         pkg_count=$("$env_path/bin/pip" list 2>/dev/null | tail -n +3 | wc -l)
     fi
     echo -e "  ${_SETV_BOLD}Packages:${_SETV_RESET}  $pkg_count installed"
@@ -599,9 +615,9 @@ _setv_backup() {
     local name py_ver env_be link_file linked req_src
 
     echo "[" > "$manifest"
-    local first=true
+    local idx=0 total=${#envs[@]}
 
-    _setv_spinner_start "Backing up ${#envs[@]} environments"
+    _setv_spinner_start "Backing up $total environments"
 
     for name in "${envs[@]}"; do
         py_ver=$(_setv_python_version "$name")
@@ -631,19 +647,17 @@ _setv_backup() {
             cp "$req_src" "$backup_dir/${name}.requirements.txt"
         fi
 
-        # Append to manifest
-        if [[ "$first" == true ]]; then
-            first=false
-        else
-            echo "," >> "$manifest"
-        fi
+        idx=$((idx + 1))
+        local trailing="}"
+        [[ $idx -lt $total ]] && trailing="},"
+
         cat >> "$manifest" <<ENTRY
   {
     "name": "$name",
     "python": "$py_num",
     "backend": "$env_be",
     "project": "$linked"
-  }
+  $trailing
 ENTRY
     done
 
