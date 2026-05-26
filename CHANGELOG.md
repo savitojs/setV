@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.2.1](https://github.com/savitojs/setV/compare/v3.2.0...v3.2.1) (2026-05-26)
+
+
+### Fixed
+
+* release-please version bumping, mv alias in update ([856749f](https://github.com/savitojs/setV/commit/856749fa683548617d4c99985eadb92a7e21d577))
+
 ## [3.2.0](https://github.com/savitojs/setV/compare/v3.1.1...v3.2.0) (2026-05-26)
 
 
