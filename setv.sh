@@ -15,7 +15,7 @@
 #   SETV_BACKEND           - Backend: auto|uv|venv (default: auto)
 #   SETV_DEFAULT_PYTHON    - Default Python binary (default: python3)
 
-SETV_VERSION="3.1.0" # x-release-please-version
+SETV_VERSION="3.2.0" # x-release-please-version
 SETV_REPO="savitojs/setV"
 
 # --- Configuration with defaults ---
@@ -1151,7 +1151,7 @@ _setv_update() {
         return 1
     fi
 
-    mv "$tmp_script" "$target"
+    command mv -f "$tmp_script" "$target"
     chmod 644 "$target"
     _setv_msg "Updated to ${_SETV_GREEN}${latest}${_SETV_RESET}"
     echo "  Reload your shell: ${_SETV_DIM}source ${target}${_SETV_RESET}"
