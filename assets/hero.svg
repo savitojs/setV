@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 200" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="800" y2="200" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    <linearGradient id="green" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#22c55e"/>
+      <stop offset="100%" stop-color="#16a34a"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="200" rx="12" fill="url(#bg)"/>
+
+  <!-- Left: name + tagline -->
+  <text x="60" y="78" fill="#22c55e" font-family="SF Mono,Monaco,Consolas,monospace" font-size="48" font-weight="bold">setV</text>
+  <text x="60" y="108" fill="#94a3b8" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif" font-size="16">Python virtual environment manager</text>
+  <text x="60" y="135" fill="#64748b" font-family="SF Mono,Monaco,Consolas,monospace" font-size="13">$ setv -n myproject -p 3.12</text>
+  <text x="60" y="155" fill="#3b82f6" font-family="SF Mono,Monaco,Consolas,monospace" font-size="13">&gt;&gt;&gt; Activated myproject (Python 3.12.8)</text>
+
+  <!-- Right: backend/shell pills -->
+  <rect x="440" y="42" width="60" height="24" rx="12" fill="#22c55e" opacity="0.15"/>
+  <text x="470" y="58" text-anchor="middle" fill="#22c55e" font-family="SF Mono,Monaco,Consolas,monospace" font-size="11" font-weight="600">uv</text>
+
+  <rect x="510" y="42" width="72" height="24" rx="12" fill="#22c55e" opacity="0.15"/>
+  <text x="546" y="58" text-anchor="middle" fill="#22c55e" font-family="SF Mono,Monaco,Consolas,monospace" font-size="11" font-weight="600">venv</text>
+
+  <rect x="592" y="42" width="72" height="24" rx="12" fill="#3b82f6" opacity="0.15"/>
+  <text x="628" y="58" text-anchor="middle" fill="#58a6ff" font-family="SF Mono,Monaco,Consolas,monospace" font-size="11" font-weight="600">bash</text>
+
+  <rect x="674" y="42" width="60" height="24" rx="12" fill="#3b82f6" opacity="0.15"/>
+  <text x="704" y="58" text-anchor="middle" fill="#58a6ff" font-family="SF Mono,Monaco,Consolas,monospace" font-size="11" font-weight="600">zsh</text>
+
+  <!-- Feature list -->
+  <text x="440" y="95" fill="#e2e8f0" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif" font-size="13">
+    <tspan x="440" dy="0" fill="#22c55e">&#x2713;</tspan><tspan dx="6">Create, activate, delete, list</tspan>
+    <tspan x="440" dy="20" fill="#22c55e">&#x2713;</tspan><tspan dx="6">Backup, restore, doctor, rebuild</tspan>
+    <tspan x="440" dy="20" fill="#22c55e">&#x2713;</tspan><tspan dx="6">Auto-freeze on deactivate</tspan>
+    <tspan x="440" dy="20" fill="#22c55e">&#x2713;</tspan><tspan dx="6">Project linking &amp; auto-activate</tspan>
+  </text>
+
+  <!-- Divider -->
+  <line x1="420" y1="42" x2="420" y2="170" stroke="#30363d" stroke-width="1"/>
+
+  <!-- Version badge -->
+  <rect x="710" y="168" width="50" height="20" rx="10" fill="url(#green)"/>
+  <text x="735" y="182" text-anchor="middle" fill="#fff" font-family="SF Mono,Monaco,Consolas,monospace" font-size="11" font-weight="bold">3.1</text>
+</svg>
