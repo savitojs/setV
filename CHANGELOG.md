@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.2.0](https://github.com/savitojs/setV/compare/v3.1.1...v3.2.0) (2026-05-26)
+
+
+### Features
+
+* one-liner curl install, dual-mode installer ([699b0ef](https://github.com/savitojs/setV/commit/699b0ef3e3f97fb0fdd8979685110ab37988180c))
+
 ## [3.1.1](https://github.com/savitojs/setV/compare/v3.1.0...v3.1.1) (2026-05-26)
 
 
