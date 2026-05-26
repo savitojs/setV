@@ -1,3 +1,33 @@
+2026-02-23  Savitoj Singh <savsingh@redhat.com>
+
+	* Version 3.1
+	* Auto-freeze packages on every deactivate
+	* Backup & restore for laptop migration (setv backup / setv restore)
+	* Doctor & rebuild for broken envs after OS Python upgrades
+	* Freeze command (setv freeze) for manual package export
+	* Temporary environments (setv --tmp), auto-deleted on deactivate
+	* Run without activate (setv --run myenv -- command)
+	* Auto-activate on cd via .setv file (setv --init)
+	* Braille dot spinner for long operations
+	* Improved help with colored sections
+	* Test suite for bash and zsh (60 tests)
+	* GitHub Actions CI workflow
+	* Fixed set -u (nounset) compatibility throughout
+	* Fixed compdef availability check for non-interactive zsh
+
+2026-02-23  Savitoj Singh <savsingh@redhat.com>
+
+	* Version 3.0 - Complete rewrite
+	* uv as preferred backend (auto-detected, falls back to venv)
+	* Python version selection (setv -n myenv -p 3.12)
+	* Project directory linking (--link, --unlink, --cd)
+	* Environment info command (-i/--info)
+	* Native Zsh completion (no bashcompinit)
+	* Colored output with terminal detection
+	* Idempotent installer with uninstall support
+	* Migration from ~/virtualenvs to ~/.virtualenvs
+	* Input validation and better error messages
+
 2021-07-08  Savitoj Singh <savsingh@redhat.com>
 
 	* ZSH support
