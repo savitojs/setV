@@ -15,7 +15,7 @@
 #   SETV_BACKEND           - Backend: auto|uv|venv (default: auto)
 #   SETV_DEFAULT_PYTHON    - Default Python binary (default: python3)
 
-SETV_VERSION="3.2.0" # x-release-please-version
+SETV_VERSION="3.2.1" # x-release-please-version
 SETV_REPO="savitojs/setV"
 
 # --- Configuration with defaults ---
