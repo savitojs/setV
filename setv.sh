@@ -29,7 +29,7 @@ _SETV_META_DIR="${SETV_VIRTUAL_DIR_PATH}/.setv"
 _SETV_AUTO_ACTIVATED=""  # tracks if current env was auto-activated
 
 # --- Colors (disabled if not a terminal) ---
-if [[ -t 1 ]]; then
+if [[ -o interactive ]]; then
     _SETV_BOLD=$'\033[1m'
     _SETV_GREEN=$'\033[0;32m'
     _SETV_RED=$'\033[0;31m'
