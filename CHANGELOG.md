@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.2.2](https://github.com/savitojs/setV/compare/v3.2.1...v3.2.2) (2026-06-08)
+
+
+### Fixed
+
+* use interactive shell check for color detection ([908dc4b](https://github.com/savitojs/setV/commit/908dc4bd46aaf16166dfed8a50ef437592cb77b7))
+
 ## [3.2.1](https://github.com/savitojs/setV/compare/v3.2.0...v3.2.1) (2026-05-26)
 
 
