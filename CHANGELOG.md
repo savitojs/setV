@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.2.3](https://github.com/savitojs/setV/compare/v3.2.2...v3.2.3) (2026-06-09)
+
+
+### Fixed
+
+* seed pip into uv-created virtualenvs ([19a5a36](https://github.com/savitojs/setV/commit/19a5a36a1cc899fba3445e06f1b00c4eb4f4cfd0))
+
 ## [3.2.2](https://github.com/savitojs/setV/compare/v3.2.1...v3.2.2) (2026-06-08)
 
 
