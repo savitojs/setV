@@ -4,7 +4,7 @@
 
 <p align="center">
   <a href="https://github.com/savitojs/setV/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-GPLv3-blue.svg" alt="License: GPL v3"></a>
-  <img src="https://img.shields.io/static/v1?label=version&message=3.2.3&color=green" alt="version"> <!-- x-release-please-version -->
+  <img src="https://img.shields.io/static/v1?label=version&message=3.3.0&color=green" alt="version"> <!-- x-release-please-version -->
   <img src="https://img.shields.io/badge/shell-bash%20%7C%20zsh-informational.svg" alt="Shell: bash | zsh">
   <img src="https://img.shields.io/badge/backend-uv%20%7C%20venv-orange.svg" alt="Backend: uv | venv">
   <img src="https://img.shields.io/badge/python-3.x-yellow.svg" alt="Python 3.x">
