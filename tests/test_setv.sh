@@ -2,15 +2,144 @@
 # setV test suite - runs in both bash and zsh
 #
 # Usage:
-#   ./tests/test_setv.sh          # run with current shell
-#   bash ./tests/test_setv.sh     # bash only
-#   zsh ./tests/test_setv.sh      # zsh only
+#   ./tests/test_setv.sh               # run with current shell
+#   bash ./tests/test_setv.sh          # bash only
+#   zsh ./tests/test_setv.sh           # zsh only
+#   ./tests/test_setv.sh --container   # run in Ubuntu + UBI containers via podman
 
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
+REPO_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+# --- Container tests ---
+
+run_container_tests() {
+    local images=(
+        "ubuntu:24.04"
+        "registry.access.redhat.com/ubi9/ubi-minimal:latest"
+    )
+    local total_pass=0 total_fail=0
+
+    if ! command -v podman &>/dev/null; then
+        echo "podman not found, skipping container tests"
+        exit 0
+    fi
+
+    for image in "${images[@]}"; do
+        local short_name="${image%%:*}"
+        short_name="${short_name##*/}"
+        echo ""
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo " Container: $short_name ($image)"
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+        local install_cmd
+        case "$short_name" in
+            ubuntu)
+                install_cmd='apt-get update -qq > /dev/null 2>&1 && apt-get install -y -qq python3 python3-venv python3-pip curl > /dev/null 2>&1'
+                ;;
+            ubi-minimal)
+                install_cmd='microdnf install -y python3 python3-pip tar gzip findutils > /dev/null 2>&1'
+                ;;
+        esac
+
+        local rc=0
+        podman run --rm \
+            -v "$REPO_DIR:/setv:z,ro" \
+            "$image" bash -c "
+$install_cmd
+
+curl -LsSf https://astral.sh/uv/install.sh 2>/dev/null | sh 2>/dev/null
+export PATH=\"\$HOME/.local/bin:\$PATH\"
+export HOME=/root
+
+# --- Run full test suite ---
+echo ''
+echo '=== Full test suite ==='
+bash /setv/tests/test_setv.sh
+suite_rc=\$?
+
+# --- Container-specific tests ---
+echo ''
+echo '=== Container-specific tests ==='
+
+source /setv/setv.sh
+PASS=0; FAIL=0
+pass() { echo \"  \$(printf '\033[32mPASS\033[0m') \$1\"; PASS=\$((PASS+1)); }
+fail() { echo \"  \$(printf '\033[31mFAIL\033[0m') \$1\"; FAIL=\$((FAIL+1)); }
+
+# pip exists in uv-created venv (--seed)
+setv -n seed-test 2>&1 >/dev/null
+[[ -x ~/.virtualenvs/seed-test/bin/pip ]] && pass 'pip binary in uv venv' || fail 'pip binary in uv venv'
+[[ -x ~/.virtualenvs/seed-test/bin/pip3 ]] && pass 'pip3 binary in uv venv' || fail 'pip3 binary in uv venv'
+pip --version 2>&1 | grep -q seed-test && pass 'pip resolves to venv' || fail 'pip resolves to venv'
+
+# pip install works (PEP 668 not triggered)
+pip install requests 2>&1 >/dev/null && pass 'pip install succeeds' || fail 'pip install succeeds'
+python3 -c 'import requests' 2>&1 && pass 'installed package importable' || fail 'installed package importable'
+
+# freeze filters seed packages
+freeze_out=\$(setv freeze 2>&1)
+echo \"\$freeze_out\" | grep -qi 'requests' && pass 'freeze includes requests' || fail 'freeze includes requests'
+echo \"\$freeze_out\" | grep -qi '^pip==' && fail 'freeze leaks pip' || pass 'freeze excludes pip'
+echo \"\$freeze_out\" | grep -qi '^setuptools==' && fail 'freeze leaks setuptools' || pass 'freeze excludes setuptools'
+echo \"\$freeze_out\" | grep -qi '^wheel==' && fail 'freeze leaks wheel' || pass 'freeze excludes wheel'
+
+# auto-freeze filters seed packages
+deactivate 2>/dev/null
+req_file=\"\$HOME/.virtualenvs/.setv/seed-test.requirements.txt\"
+if [[ -f \"\$req_file\" ]]; then
+    grep -qi '^pip==' \"\$req_file\" && fail 'auto-freeze leaks pip' || pass 'auto-freeze excludes pip'
+    grep -qi 'requests' \"\$req_file\" && pass 'auto-freeze has requests' || fail 'auto-freeze has requests'
+else
+    fail 'auto-freeze file exists'
+fi
+
+# bare subcommands
+setv link seed-test 2>&1 | grep -q 'Linked' && pass 'setv link' || fail 'setv link'
+setv unlink seed-test 2>&1 | grep -q 'Unlinked' && pass 'setv unlink' || fail 'setv unlink'
+setv run seed-test -- python3 --version 2>&1 | grep -q 'Python' && pass 'setv run' || fail 'setv run'
+
+# -- aliases still work
+setv --link seed-test 2>&1 | grep -q 'Linked' && pass 'setv --link alias' || fail 'setv --link alias'
+setv --unlink seed-test 2>&1 | grep -q 'Unlinked' && pass 'setv --unlink alias' || fail 'setv --unlink alias'
+setv --run seed-test -- python3 --version 2>&1 | grep -q 'Python' && pass 'setv --run alias' || fail 'setv --run alias'
+
+# version
+setv -v 2>&1 | grep -q 'setv' && pass 'setv -v' || fail 'setv -v'
+
+echo ''
+echo \"─────────────────────────────\"
+printf 'Container-specific: %d passed, %d failed\n' \$PASS \$FAIL
+exit \$((suite_rc + FAIL))
+" || rc=$?
+
+        if [[ $rc -eq 0 ]]; then
+            echo ""
+            echo " Result: PASS"
+            total_pass=$((total_pass + 1))
+        else
+            echo ""
+            echo " Result: FAIL (exit code $rc)"
+            total_fail=$((total_fail + 1))
+        fi
+    done
+
+    echo ""
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo " Container summary: $total_pass passed, $total_fail failed"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    return $total_fail
+}
+
+if [[ "${1:-}" == "--container" ]]; then
+    run_container_tests
+    exit $?
+fi
+
 # --- Test framework ---
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 SETV_SRC="$SCRIPT_DIR/../setv.sh"
 TEST_VENV_DIR=$(mktemp -d)
 _TEST_OUT=$(mktemp)
@@ -182,14 +311,14 @@ assert_contains "info shows size" "$out" "Size:"
 echo ""
 echo "${YELLOW}Project Linking${RESET}"
 
-capture_run setv --link test_create
+capture_run setv link test_create
 assert_contains "link project" "$out" "Linked"
 assert_ok "link file exists" "[[ -f '$TEST_VENV_DIR/.setv/test_create.link' ]]"
 
 capture_run setv -i test_create
 assert_contains "info shows project link" "$out" "Project:"
 
-capture_run setv --unlink test_create
+capture_run setv unlink test_create
 assert_contains "unlink project" "$out" "Unlinked"
 assert_ok "link file removed" "[[ ! -f '$TEST_VENV_DIR/.setv/test_create.link' ]]"
 
@@ -292,7 +421,7 @@ echo ""
 echo "${YELLOW}Temporary Environment${RESET}"
 
 deactivate 2>/dev/null || true
-capture_run setv --tmp
+capture_run setv tmp
 assert_contains "tmp env created" "$out" "Activated tmp_"
 assert_ok "tmp env VIRTUAL_ENV set" "[[ -n '${VIRTUAL_ENV:-}' ]]"
 tmp_name=$(basename "${VIRTUAL_ENV:-none}")
@@ -306,14 +435,14 @@ echo ""
 echo "${YELLOW}Run Without Activate${RESET}"
 
 deactivate 2>/dev/null || true
-capture_run setv --run test_create -- python --version
+capture_run setv run test_create -- python --version
 assert_contains "run shows python version" "$out" "Python"
 assert_ok "shell not activated after run" "[[ -z '${VIRTUAL_ENV:-}' ]]"
 
-capture_run setv --run test_create -- python -c 'import sys; print(sys.prefix)'
+capture_run setv run test_create -- python -c 'import sys; print(sys.prefix)'
 assert_contains "run uses correct env" "$out" "test_create"
 
-capture_run setv --run nonexistent -- python --version
+capture_run setv run nonexistent -- python --version
 assert_contains "run nonexistent fails" "$out" "does not exist"
 
 # -- Auto-activate --

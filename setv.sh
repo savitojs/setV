@@ -15,7 +15,7 @@
 #   SETV_BACKEND           - Backend: auto|uv|venv (default: auto)
 #   SETV_DEFAULT_PYTHON    - Default Python binary (default: python3)
 
-SETV_VERSION="3.2.2" # x-release-please-version
+SETV_VERSION="3.3.0" # x-release-please-version
 SETV_REPO="savitojs/setV"
 
 # --- Configuration with defaults ---
@@ -164,32 +164,32 @@ _setv_help() {
     echo -e "    ${_SETV_BOLD}setv -n${_SETV_RESET} ${_SETV_CYAN}<name>${_SETV_RESET}               Create + activate"
     echo -e "    ${_SETV_BOLD}setv -n${_SETV_RESET} ${_SETV_CYAN}<name>${_SETV_RESET} ${_SETV_BOLD}-p${_SETV_RESET} ${_SETV_CYAN}<ver>${_SETV_RESET}      Create with Python version"
     echo -e "    ${_SETV_BOLD}setv -d${_SETV_RESET} ${_SETV_CYAN}<name>${_SETV_RESET}               Delete environment"
-    echo -e "    ${_SETV_BOLD}setv -l${_SETV_RESET}                        List all envs"
-    echo -e "    ${_SETV_BOLD}setv -i${_SETV_RESET} ${_SETV_DIM}[name]${_SETV_RESET}                Show env details"
+    echo -e "    ${_SETV_BOLD}setv -l${_SETV_RESET}                      List all envs"
+    echo -e "    ${_SETV_BOLD}setv -i${_SETV_RESET} ${_SETV_DIM}[name]${_SETV_RESET}               Show env details"
     echo ""
     echo -e "  ${_SETV_BLUE}${_SETV_BOLD}PROJECTS${_SETV_RESET}"
-    echo -e "    ${_SETV_BOLD}setv --link${_SETV_RESET} ${_SETV_DIM}[name]${_SETV_RESET}            Link \$PWD to environment"
-    echo -e "    ${_SETV_BOLD}setv --unlink${_SETV_RESET} ${_SETV_DIM}[name]${_SETV_RESET}          Remove project link"
-    echo -e "    ${_SETV_BOLD}setv --cd${_SETV_RESET} ${_SETV_CYAN}<name>${_SETV_RESET}             cd to linked project"
-    echo -e "    ${_SETV_BOLD}setv --init${_SETV_RESET} ${_SETV_DIM}[name]${_SETV_RESET}            Auto-activate on cd ${_SETV_DIM}(.setv file)${_SETV_RESET}"
+    echo -e "    ${_SETV_BOLD}setv link${_SETV_RESET} ${_SETV_DIM}[name]${_SETV_RESET}             Link \$PWD to environment"
+    echo -e "    ${_SETV_BOLD}setv unlink${_SETV_RESET} ${_SETV_DIM}[name]${_SETV_RESET}           Remove project link"
+    echo -e "    ${_SETV_BOLD}setv cd${_SETV_RESET} ${_SETV_CYAN}<name>${_SETV_RESET}               cd to linked project"
+    echo -e "    ${_SETV_BOLD}setv init${_SETV_RESET} ${_SETV_DIM}[name]${_SETV_RESET}             Auto-activate on cd ${_SETV_DIM}(.setv file)${_SETV_RESET}"
     echo ""
     echo -e "  ${_SETV_CYAN}${_SETV_BOLD}PACKAGES${_SETV_RESET}"
-    echo -e "    ${_SETV_BOLD}setv freeze${_SETV_RESET} ${_SETV_DIM}[name]${_SETV_RESET}            Export installed packages"
-    echo -e "    ${_SETV_DIM}    (auto-saved on every deactivate)${_SETV_RESET}"
+    echo -e "    ${_SETV_BOLD}setv freeze${_SETV_RESET} ${_SETV_DIM}[name]${_SETV_RESET}           Export installed packages"
+    echo -e "    ${_SETV_DIM}    (auto-saved to .setv/ on every deactivate)${_SETV_RESET}"
     echo ""
     echo -e "  ${_SETV_RED}${_SETV_BOLD}BACKUP & REPAIR${_SETV_RESET}"
-    echo -e "    ${_SETV_BOLD}setv backup${_SETV_RESET} ${_SETV_DIM}[dir]${_SETV_RESET}             Export all envs ${_SETV_DIM}(default: ./setv-backup)${_SETV_RESET}"
-    echo -e "    ${_SETV_BOLD}setv restore${_SETV_RESET} ${_SETV_CYAN}<dir>${_SETV_RESET}            Recreate envs from backup"
-    echo -e "    ${_SETV_BOLD}setv doctor${_SETV_RESET}                    Check all envs for problems"
-    echo -e "    ${_SETV_BOLD}setv rebuild${_SETV_RESET} ${_SETV_CYAN}<name>${_SETV_RESET}|${_SETV_BOLD}--all${_SETV_RESET}   Fix broken envs"
+    echo -e "    ${_SETV_BOLD}setv backup${_SETV_RESET} ${_SETV_DIM}[dir]${_SETV_RESET}            Export all envs ${_SETV_DIM}(default: ./setv-backup)${_SETV_RESET}"
+    echo -e "    ${_SETV_BOLD}setv restore${_SETV_RESET} ${_SETV_CYAN}<dir>${_SETV_RESET}           Recreate envs from backup"
+    echo -e "    ${_SETV_BOLD}setv doctor${_SETV_RESET}                  Check all envs for problems"
+    echo -e "    ${_SETV_BOLD}setv rebuild${_SETV_RESET} ${_SETV_CYAN}<name>${_SETV_RESET}|${_SETV_BOLD}--all${_SETV_RESET}    Fix broken envs"
     echo ""
     echo -e "  ${_SETV_YELLOW}${_SETV_BOLD}ADVANCED${_SETV_RESET}"
-    echo -e "    ${_SETV_BOLD}setv --tmp${_SETV_RESET} ${_SETV_DIM}[-p ver]${_SETV_RESET}           Throwaway env ${_SETV_DIM}(deleted on deactivate)${_SETV_RESET}"
-    echo -e "    ${_SETV_BOLD}setv --run${_SETV_RESET} ${_SETV_CYAN}<name>${_SETV_RESET} ${_SETV_BOLD}--${_SETV_RESET} ${_SETV_DIM}cmd${_SETV_RESET}    Run command without activating"
-    echo -e "    ${_SETV_BOLD}setv update${_SETV_RESET}                    Update to latest release"
+    echo -e "    ${_SETV_BOLD}setv tmp${_SETV_RESET} ${_SETV_DIM}[-p ver]${_SETV_RESET}            Throwaway env ${_SETV_DIM}(deleted on deactivate)${_SETV_RESET}"
+    echo -e "    ${_SETV_BOLD}setv run${_SETV_RESET} ${_SETV_CYAN}<name>${_SETV_RESET} ${_SETV_BOLD}--${_SETV_RESET} ${_SETV_DIM}cmd${_SETV_RESET}       Run command without activating"
+    echo -e "    ${_SETV_BOLD}setv update${_SETV_RESET}                  Update to latest release"
     echo ""
     local _display_path="${SETV_VIRTUAL_DIR_PATH/#$HOME/~}"
-    echo -e "  ${_SETV_DIM}${_SETV_BOLD}CONFIG${_SETV_RESET}                              ${_SETV_DIM}current${_SETV_RESET}"
+    echo -e "  ${_SETV_DIM}${_SETV_BOLD}CONFIG${_SETV_RESET}                            ${_SETV_DIM}current${_SETV_RESET}"
     echo -e "    ${_SETV_BOLD}SETV_VIRTUAL_DIR_PATH${_SETV_RESET}           ${_SETV_DIM}${_display_path}${_SETV_RESET}"
     echo -e "    ${_SETV_BOLD}SETV_BACKEND${_SETV_RESET}                    ${_SETV_DIM}${SETV_BACKEND} (${be})${_SETV_RESET}"
     echo -e "    ${_SETV_BOLD}SETV_DEFAULT_PYTHON${_SETV_RESET}             ${_SETV_DIM}${SETV_DEFAULT_PYTHON}${_SETV_RESET}"
@@ -253,7 +253,7 @@ _setv_create() {
     local output rc
 
     if [[ "$backend" == "uv" ]]; then
-        local uv_args=(venv "$env_path")
+        local uv_args=(venv "$env_path" --seed)
         if [[ -n "$python_spec" ]]; then
             uv_args+=(--python "$python_spec")
         fi
@@ -463,6 +463,12 @@ _setv_info() {
     fi
     echo -e "  ${_SETV_BOLD}Packages:${_SETV_RESET}  $pkg_count installed"
 
+    local req_file="$_SETV_META_DIR/${name}.requirements.txt"
+    if [[ -f "$req_file" && -s "$req_file" ]]; then
+        local _display_req="${req_file/#$HOME/~}"
+        echo -e "  ${_SETV_BOLD}Saved:${_SETV_RESET}     ${_SETV_DIM}${_display_req}${_SETV_RESET}"
+    fi
+
     # Disk size
     local size
     size=$(du -sh "$env_path" 2>/dev/null | cut -f1)
@@ -479,7 +485,7 @@ _setv_link() {
 
     if [[ -z "$name" ]]; then
         _setv_err "No environment specified and none active"
-        echo "Usage: setv --link [<name>]"
+        echo "Usage: setv link [<name>]"
         return 1
     fi
 
@@ -517,14 +523,14 @@ _setv_cd() {
     local name="$1"
     if [[ -z "$name" ]]; then
         _setv_err "Missing environment name"
-        echo "Usage: setv --cd <name>"
+        echo "Usage: setv cd <name>"
         return 1
     fi
 
     local link_file="$_SETV_META_DIR/${name}.link"
     if [[ ! -f "$link_file" ]]; then
         _setv_err "No project linked to '$name'"
-        echo "Link a project first: setv --link $name"
+        echo "Link a project first: setv link $name"
         return 1
     fi
 
@@ -550,9 +556,9 @@ _setv_auto_freeze() {
     _setv_ensure_dirs
     local req_file="$_SETV_META_DIR/${name}.requirements.txt"
     if _setv_has_uv; then
-        uv pip freeze --python "$VIRTUAL_ENV/bin/python" > "$req_file" 2>/dev/null
+        uv pip freeze --python "$VIRTUAL_ENV/bin/python" 2>/dev/null | grep -ivE '^(pip|setuptools|wheel)==' > "$req_file"
     elif [[ -x "$VIRTUAL_ENV/bin/pip" ]]; then
-        "$VIRTUAL_ENV/bin/pip" freeze > "$req_file" 2>/dev/null
+        "$VIRTUAL_ENV/bin/pip" freeze 2>/dev/null | grep -ivE '^(pip|setuptools|wheel)==' > "$req_file"
     fi
     return 0
 }
@@ -580,9 +586,9 @@ _setv_freeze() {
 
     local env_path="$SETV_VIRTUAL_DIR_PATH/$name"
     if _setv_has_uv; then
-        uv pip freeze --python "$env_path/bin/python" 2>/dev/null
+        uv pip freeze --python "$env_path/bin/python" 2>/dev/null | grep -ivE '^(pip|setuptools|wheel)=='
     elif [[ -x "$env_path/bin/pip" ]]; then
-        "$env_path/bin/pip" freeze 2>/dev/null
+        "$env_path/bin/pip" freeze 2>/dev/null | grep -ivE '^(pip|setuptools|wheel)=='
     else
         _setv_err "No pip or uv available to freeze '$name'"
         return 1
@@ -636,9 +642,9 @@ _setv_backup() {
             # Generate on the fly
             local env_path="$SETV_VIRTUAL_DIR_PATH/$name"
             if _setv_has_uv; then
-                uv pip freeze --python "$env_path/bin/python" > "$req_src" 2>/dev/null
+                uv pip freeze --python "$env_path/bin/python" 2>/dev/null | grep -ivE '^(pip|setuptools|wheel)==' > "$req_src"
             elif [[ -x "$env_path/bin/pip" ]]; then
-                "$env_path/bin/pip" freeze > "$req_src" 2>/dev/null
+                "$env_path/bin/pip" freeze 2>/dev/null | grep -ivE '^(pip|setuptools|wheel)==' > "$req_src"
             fi
         fi
 
@@ -975,7 +981,7 @@ _setv_run() {
     local cmd_args=()
     local found_separator=false
 
-    # Parse: setv --run <name> -- <command...>
+    # Parse: setv run <name> -- <command...>
     while [[ $# -gt 0 ]]; do
         if [[ "$1" == "--" ]]; then
             found_separator=true
@@ -991,13 +997,13 @@ _setv_run() {
 
     if [[ -z "$name" ]]; then
         _setv_err "Missing environment name"
-        echo "Usage: setv --run <name> -- <command> [args...]"
+        echo "Usage: setv run <name> -- <command> [args...]"
         return 1
     fi
 
     if [[ "$found_separator" == false || ${#cmd_args[@]} -eq 0 ]]; then
         _setv_err "Missing command after --"
-        echo "Usage: setv --run <name> -- <command> [args...]"
+        echo "Usage: setv run <name> -- <command> [args...]"
         return 1
     fi
 
@@ -1028,7 +1034,7 @@ _setv_init() {
 
     if [[ -z "$name" ]]; then
         _setv_err "No environment specified and none active"
-        echo "Usage: setv --init <name>"
+        echo "Usage: setv init <name>"
         return 1
     fi
 
@@ -1181,12 +1187,12 @@ if [[ -n "${ZSH_VERSION:-}" ]]; then
             '--list:List all virtual environments'
             '-i:Show environment info'
             '--info:Show environment info'
-            '--link:Link current directory to environment'
-            '--unlink:Remove project link'
-            '--cd:cd to linked project'
-            '--tmp:Create temporary environment'
-            '--run:Run command in environment'
-            '--init:Create .setv for auto-activate'
+            'link:Link current directory to environment'
+            'unlink:Remove project link'
+            'cd:cd to linked project'
+            'tmp:Create temporary environment'
+            'run:Run command in environment'
+            'init:Create .setv for auto-activate'
             'freeze:Export installed packages'
             'backup:Export all envs to backup dir'
             'restore:Recreate envs from backup'
@@ -1194,6 +1200,7 @@ if [[ -n "${ZSH_VERSION:-}" ]]; then
             'rebuild:Fix broken environments'
             'update:Update to latest release'
             '--backend:Show active backend'
+            '-v:Show version'
             '--version:Show version'
             '-h:Show help'
             '--help:Show help'
@@ -1204,7 +1211,7 @@ if [[ -n "${ZSH_VERSION:-}" ]]; then
             _describe 'virtual environments' envs
         elif (( CURRENT == 3 )); then
             case "${words[2]}" in
-                -d|--delete|-i|--info|--link|--unlink|--cd|--run|--init|freeze|rebuild)  # shellcheck disable=SC2154
+                -d|--delete|-i|--info|link|--link|unlink|--unlink|cd|--cd|run|--run|init|--init|freeze|rebuild)  # shellcheck disable=SC2154
                     _describe 'virtual environments' envs
                     ;;
                 -n|--new)
@@ -1230,7 +1237,7 @@ elif [[ -n "${BASH_VERSION:-}" ]]; then
         prev="${COMP_WORDS[COMP_CWORD-1]}"
 
         case "$prev" in
-            -d|--delete|-i|--info|--link|--unlink|--cd|--run|--init|freeze|rebuild)
+            -d|--delete|-i|--info|link|--link|unlink|--unlink|cd|--cd|run|--run|init|--init|freeze|rebuild)
                 local envs
                 envs=$(_setv_envs)
                 # shellcheck disable=SC2207
@@ -1247,7 +1254,7 @@ elif [[ -n "${BASH_VERSION:-}" ]]; then
 
         if [[ "$cur" == -* ]]; then
             # shellcheck disable=SC2207
-            COMPREPLY=($(compgen -W "-n --new -d --delete -l --list -i --info --link --unlink --cd --tmp --run --init freeze backup restore doctor rebuild update --backend --version -h --help -p --python" -- "$cur"))
+            COMPREPLY=($(compgen -W "-n --new -d --delete -l --list -i --info link unlink cd tmp run init freeze backup restore doctor rebuild update --backend -v --version -h --help -p --python" -- "$cur"))
         else
             local envs
             envs=$(_setv_envs)
@@ -1270,7 +1277,7 @@ setv() {
         -h|--help)
             _setv_help
             ;;
-        --version)
+        -v|--version)
             echo "setv $SETV_VERSION"
             ;;
         -n|--new)
@@ -1286,24 +1293,24 @@ setv() {
         -i|--info)
             _setv_info "${2:-}"
             ;;
-        --link)
+        link|--link)
             _setv_link "${2:-}"
             ;;
-        --unlink)
+        unlink|--unlink)
             _setv_unlink "${2:-}"
             ;;
-        --cd)
+        cd|--cd)
             _setv_cd "${2:-}"
             ;;
-        --tmp)
+        tmp|--tmp)
             shift
             _setv_tmp "$@"
             ;;
-        --run)
+        run|--run)
             shift
             _setv_run "$@"
             ;;
-        --init)
+        init|--init)
             _setv_init "${2:-}"
             ;;
         freeze)

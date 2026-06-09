@@ -4,7 +4,7 @@
 
 <p align="center">
   <a href="https://github.com/savitojs/setV/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-GPLv3-blue.svg" alt="License: GPL v3"></a>
-  <img src="https://img.shields.io/badge/version-3.1.0-green.svg" alt="Version 3.1.0">
+  <img src="https://img.shields.io/badge/version-3.3.0-green.svg" alt="Version 3.3.0"> <!-- x-release-please-version -->
   <img src="https://img.shields.io/badge/shell-bash%20%7C%20zsh-informational.svg" alt="Shell: bash | zsh">
   <img src="https://img.shields.io/badge/backend-uv%20%7C%20venv-orange.svg" alt="Backend: uv | venv">
   <img src="https://img.shields.io/badge/python-3.x-yellow.svg" alt="Python 3.x">
@@ -31,8 +31,8 @@ Python's built-in `venv` works fine for creating environments. What it doesn't d
 - **Auto-freeze on every deactivate.** Packages are silently saved each time you deactivate. When something breaks, the requirements are already there.
 - **Backup and restore.** `setv backup` exports every environment's metadata and packages. `setv restore` recreates them on a new machine.
 - **Project linking.** Associate a directory with an environment. Drop a `.setv` file and the environment auto-activates on `cd`.
-- **Throwaway environments.** `setv --tmp` creates an environment that deletes itself when you deactivate.
-- **Run without activating.** `setv --run myenv -- pytest tests/` executes in the environment's context without touching your shell state.
+- **Throwaway environments.** `setv tmp` creates an environment that deletes itself when you deactivate.
+- **Run without activating.** `setv run myenv -- pytest tests/` executes in the environment's context without touching your shell state.
 - **Works in both Bash and Zsh.** Native tab completion for both. No `bashcompinit` hacks.
 
 ## Install
@@ -80,16 +80,16 @@ Or from a local clone: `./install.sh --uninstall`
 | List all envs | `setv -l` |
 | Delete | `setv -d myproject` |
 | Environment info | `setv -i myproject` |
-| Link project directory | `setv --link myproject` |
-| Navigate to linked project | `setv --cd myproject` |
-| Auto-activate on cd | `setv --init myproject` |
+| Link project directory | `setv link myproject` |
+| Navigate to linked project | `setv cd myproject` |
+| Auto-activate on cd | `setv init myproject` |
 | Freeze packages | `setv freeze myproject` |
 | Backup all envs | `setv backup ~/backup` |
 | Restore from backup | `setv restore ~/backup` |
 | Health check | `setv doctor` |
 | Fix broken envs | `setv rebuild --all` |
-| Throwaway env | `setv --tmp` |
-| Run without activating | `setv --run myenv -- pytest` |
+| Throwaway env | `setv tmp` |
+| Run without activating | `setv run myenv -- pytest` |
 | Update setv | `setv update` |
 
 ## Doctor and rebuild
